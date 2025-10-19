@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Silent Code — Solutions Web & Automatisation</title>
+  <meta name="description" content="Création de sites web et automatisations pour entreprises locales. Livraison en 7 jours.">
+  <style>
+    :root { --bg:#0f1115; --card:#151822; --muted:#a7b0c0; --text:#e8edf7; --accent:#4da3ff; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+    .wrap{max-width:960px;margin:0 auto;padding:32px}
+    .hero{background:linear-gradient(180deg,#111523, #0f1115);border:1px solid #1e2433;border-radius:16px;padding:28px;box-shadow:0 8px 40px rgba(0,0,0,.35)}
+    .kicker{letter-spacing:.12em;color:var(--muted);text-transform:uppercase;font-size:12px}
+    h1{margin:8px 0 10px;font-size:28px}
+    p.lead{margin:0 0 16px;color:#cfd7e6;max-width:60ch}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+    .card{background:var(--card);border:1px solid #23293a;border-radius:12px;padding:14px}
+    .card b{display:block;margin-bottom:6px}
+    .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-block;padding:12px 16px;border-radius:10px;text-decoration:none;background:var(--accent);color:#0a0f1a;font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid #2a3144;color:#cfd7e6}
+    form{margin-top:18px;display:grid;gap:10px}
+    input, textarea{background:#0c0f16;color:#e8edf7;border:1px solid #283145;border-radius:10px;padding:12px;width:100%}
+    button{cursor:pointer;padding:12px 16px;border-radius:10px;border:0;background:var(--accent);color:#0a0f1a;font-weight:700}
+    footer{margin-top:22px;color:#9aa7bd;font-size:13px}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="kicker">Silent Code</div>
+      <h1>Sites web & automatisations qui <u>rapportent</u> — en 7 jours</h1>
+      <p class="lead">Pages vitrines rapides, formulaires connectés, réservations WhatsApp / e-mail, suivi des leads. Offres claires. 50% à la commande, 50% à la livraison.</p>
+
+      <div class="grid">
+        <div class="card"><b>Pack Présence — 500€</b> Landing responsive + formulaire + hébergement + Google Business de base.</div>
+        <div class="card"><b>Pack Leads — 1 200–1 800€</b> Landing + automatisation (Zapier/Make) vers Google Sheet & mail, suivi simple.</div>
+        <div class="card"><b>Pack Growth — 2 500€+</b> Funnel + prise de RDV + séquence e-mail/SMS + analytics.</div>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="#contact">Demander une démo</a>
+        <a class="btn secondary" href="mailto:jeremie.dev.services@gmail.com">Me contacter</a>
+      </div>
+
+      <form id="contact" aria-label="Demande" onsubmit="return sendLead(event)">
+        <input name="name" placeholder="Nom / Commerce" required>
+        <input name="phone" placeholder="Téléphone (WhatsApp)" required>
+        <input name="email" placeholder="Email (optionnel)">
+        <textarea name="message" rows="3" placeholder="Votre besoin (ex. prises de RDV)"></textarea>
+        <button type="submit">Envoyer la demande</button>
+      </form>
+
+      <footer>
+        Jérémie — Développeur Web & Automatisation — Silent Code<br>
+        Solutions digitales efficaces et solides — 📧 jeremie.dev.services@gmail.com
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Webhook Zapier (à remplacer quand tu l'auras) :
+    const ZAPIER_WEBHOOK_URL = ""; // ex: https://hooks.zapier.com/hooks/catch/xxxx/xxxx
+
+    async function sendLead(e){
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const payload = {
+        name: fd.get('name'),
+        phone: fd.get('phone'),
+        email: fd.get('email'),
+        message: fd.get('message'),
+        source: 'silentcode-landing',
+        ts: new Date().toISOString()
+      };
+
+      try{
+        if(!ZAPIER_WEBHOOK_URL){
+          alert("Demande envoyée (mode démo). Ajoute ton webhook Zapier quand tu l'auras.");
+          e.target.reset();
+          return true;
+        }
+        const res = await fetch(ZAPIER_WEBHOOK_URL, {
+          method:'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        if(res.ok){ alert("Demande envoyée. Je reviens vers vous rapidement."); e.target.reset(); }
+        else { alert("Erreur d’envoi. Réessayez plus tard."); }
+      }catch(err){
+        alert("Erreur réseau. Réessayez.");
+      }
+      return false;
+    }
+  </script>
+</body>
+</html>
