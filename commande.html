@@ -86,6 +86,42 @@
       <button type="submit">Envoyer ma demande</button>
     </form>
   </div>
+  <script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe("pk_test_TON_CODE_ICI"); // 🔹 ta clé publique test ici
+
+  document.querySelector("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const button = e.target.querySelector("button");
+    button.disabled = true;
+    button.textContent = "Redirection vers Stripe...";
+
+    // Simule un paiement test
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Pack Présence - Silent Code",
+              description: "Site vitrine livré sous 72h.",
+            },
+            unit_amount: 50000, // 500,00 € en centimes
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      successUrl: window.location.origin + "/commande.html?success=true",
+      cancelUrl: window.location.origin + "/commande.html?canceled=true",
+    });
+
+    if (error) alert(error.message);
+    button.disabled = false;
+    button.textContent = "Envoyer ma demande";
+  });
+</script>
 </body>
 </html>
 
