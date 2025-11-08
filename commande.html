@@ -88,7 +88,7 @@
   </div>
   <script src="https://js.stripe.com/v3/"></script>
 <script>
-  const stripe = Stripe("pk_test_TON_CODE_ICI"); // 🔹 ta clé publique test ici
+  const stripe = Stripe("pk_live_51SJRah3jyROyJUIIwrKwydcSbdo8stRyDotVKb9xggKhFuMWQKjqoH2KOGaCy2I2tAagdwbKCRRGNPRAHw1P4trk00gIRhgUgS"); // 🔹 ta clé publique test ici
 
   document.querySelector("form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -98,24 +98,14 @@
     button.textContent = "Redirection vers Stripe...";
 
     // Simule un paiement test
-    const { error } = await stripe.redirectToCheckout({
-      lineItems: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: "Pack Présence - Silent Code",
-              description: "Site vitrine livré sous 72h.",
-            },
-            unit_amount: 50000, // 500,00 € en centimes
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      successUrl: window.location.origin + "/commande.html?success=true",
-      cancelUrl: window.location.origin + "/commande.html?canceled=true",
-    });
+   const priceId = "price_1SRBky3jyROyJUIIgsjocn2f"; // ton vrai price ID
+
+const { error } = await stripe.redirectToCheckout({
+  lineItems: [{ price: priceId, quantity: 1 }],
+  mode: "payment",
+  successUrl: window.location.origin + "/commande.html?success=1",
+  cancelUrl: window.location.origin + "/commande.html?canceled=1",
+});
 
     if (error) alert(error.message);
     button.disabled = false;
