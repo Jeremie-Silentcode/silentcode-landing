@@ -86,30 +86,42 @@
       <button type="submit">Envoyer ma demande</button>
     </form>
   </div>
-  <script src="https://js.stripe.com/v3/"></script>
+ <script src="https://js.stripe.com/v3/"></script>
 <script>
-  const stripe = Stripe("pk_test_51SJRah3jyROyJUIIqM6dNuXuzVIQls4gNM3DsPXpMbSRA4AHdAOkbcHt8D7YPieyQNSK7IctdOabz1m36d8ZbCgu0006pL0Vtt"); // 🔹 ta clé publique test ici
+  // 1. Clé publique TEST Stripe
+  const stripe = Stripe("pk_test_5153Rah3jyROyJUIITwKqdC5dbo8sRTyD8tv9ggkhFUMKq0gxH2f0GcaY2I1Z4gwdeNkCRGRNPfAwMP4trKQ8gLTnByU5");
 
-  document.querySelector("form").addEventListener("submit", async (e) => {
+  // 2. ID du prix TEST (copié du Dashboard en mode test)
+  const priceId = "price_1SRCKm3jyROyJUIItbVGmJy9";
+
+  const form = document.querySelector("form");
+  const submitButton = form.querySelector("button[type='submit']");
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const button = e.target.querySelector("button");
-    button.disabled = true;
-    button.textContent = "Redirection vers Stripe...";
+    submitButton.disabled = true;
+    submitButton.textContent = "Redirection vers Stripe...";
 
-    // Simule un paiement test
-   const priceId = "price_1SRCKm3jyROyJUIItbVGmJy9"; // ton vrai price ID
+    try {
+      const { error } = await stripe.redirectToCheckout({
+        lineItems: [{ price: priceId, quantity: 1 }],
+        mode: "payment",
+        successUrl: window.location.origin + "/commande.html?success=1",
+        cancelUrl: window.location.origin + "/commande.html?canceled=1",
+      });
 
-const { error } = await stripe.redirectToCheckout({
-  lineItems: [{ price: priceId, quantity: 1 }],
-  mode: "payment",
-  successUrl: window.location.origin + "/commande.html?success=1",
-  cancelUrl: window.location.origin + "/commande.html?canceled=1",
-});
+      if (error) {
+        console.error("Stripe Checkout error:", error);
+        alert(error.message);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("Erreur inattendue : " + err.message);
+    }
 
-    if (error) alert(error.message);
-    button.disabled = false;
-    button.textContent = "Envoyer ma demande";
+    submitButton.disabled = false;
+    submitButton.textContent = "Envoyer ma demande";
   });
 </script>
 </body>
