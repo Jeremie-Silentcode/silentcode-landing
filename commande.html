@@ -98,7 +98,7 @@
     button.textContent = "Redirection vers Stripe...";
 
     // Simule un paiement test
-   const priceId = "price_1SRBky3jyROyJUIIgsjocn2f"; // ton vrai price ID
+   const priceId = "price_1SRCKm3jyROyJUIItbVGmJy9"; // ton vrai price ID
 
 const { error } = await stripe.redirectToCheckout({
   lineItems: [{ price: priceId, quantity: 1 }],
