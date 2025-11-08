@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commander votre site - Silent Code</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f0f;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #1a1a1a;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 480px;
+    }
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #ccc;
+      font-size: 14px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 6px;
+      background-color: #2b2b2b;
+      color: white;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #ffffff0d;
+      border: 1px solid #666;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background-color: #fff;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Commande Silent Code</h1>
+    <form action="https://hooks.zapier.com/hooks/catch/xxx/xxxxxx" method="POST">
+      <label>Nom complet</label>
+      <input type="text" name="nom" required />
+
+      <label>Email</label>
+      <input type="email" name="email" required />
+
+      <label>Description de votre activité</label>
+      <textarea name="description" rows="4" required></textarea>
+
+      <label>Budget approximatif (€)</label>
+      <input type="number" name="budget" required />
+
+      <label>Souhaitez-vous un paiement via Stripe ?</label>
+      <select name="paiement" required>
+        <option value="oui">Oui</option>
+        <option value="non">Non</option>
+      </select>
+
+      <button type="submit">Envoyer ma demande</button>
+    </form>
+  </div>
+</body>
+</html>
 
