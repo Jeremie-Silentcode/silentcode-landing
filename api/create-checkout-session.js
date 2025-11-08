@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       mode: 'payment',
       line_items: [
         {
-          price: 'price_1SRCKm3jyROyJUIItbVGmJy9',
+          price: 'price_1SRCKm3jyROyJUIItbVGmJy9', // ton Price ID test
           quantity: 1,
         },
       ],
@@ -20,8 +20,10 @@ export default async function handler(req, res) {
       cancel_url: `${req.headers.origin}/commande.html?canceled=true`,
     });
 
+    // On renvoie juste l'URL
     res.status(200).json({ url: session.url });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 }
