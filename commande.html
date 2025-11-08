@@ -217,6 +217,20 @@
         button.textContent = "Envoyer ma demande";
       }
     });
+    // Affiche un message selon le résultat Stripe (success / canceled)
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const success = params.get("success");
+  const canceled = params.get("canceled");
+
+  if (success === "true") {
+    alert("✅ Paiement test réussi. Votre demande a bien été enregistrée.");
+  }
+
+  if (canceled === "1" || canceled === "true") {
+    alert("❌ Paiement annulé. Aucun montant n'a été débité.");
+  }
+})();
   </script>
 </body>
 </html>
