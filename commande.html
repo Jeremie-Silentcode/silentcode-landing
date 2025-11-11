@@ -186,12 +186,13 @@
     };
 
     try {
-      // 🔹 1. Envoi des infos à Zapier
-      await fetch("https://hooks.zapier.com/hooks/catch/25324492/u83b96z/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+     // 🔹 1. Envoi des infos à Zapier
+await fetch("https://hooks.zapier.com/hooks/catch/25324492/u83b96z/", {
+  method: "POST",
+  mode: "no-cors",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(formData),
+});
 
       // 🔹 2. Si le client veut payer, on redirige vers Stripe
       if (paymentChoice.value === "oui") {
