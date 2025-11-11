@@ -167,71 +167,76 @@
   </div>
 
   <script>
-    const form = document.getElementById('orderForm');
-    const button = document.getElementById('submitButton');
-    const paymentChoice = document.getElementById('paymentChoice');
+  const form = document.getElementById('orderForm');
+  const button = document.getElementById('submitButton');
+  const paymentChoice = document.getElementById('paymentChoice');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // Si le client ne veut pas payer via Stripe maintenant,
-      // on se contente (pour l'instant) de confirmer la demande.
-      if (paymentChoice.value === 'non') {
-        alert(
-          "Demande envoyée sans paiement Stripe.\nTu pourras envoyer un lien de paiement séparé ou gérer ça à la main."
-        );
-        return;
-      }
+    button.disabled = true;
+    button.textContent = "Traitement en cours...";
 
-      button.disabled = true;
-      button.textContent = "Redirection vers Stripe...";
+    const formData = {
+      nom: form.nom.value,
+      email: form.email.value,
+      description: form.description.value,
+      budget: form.budget.value,
+      paiement: form.paymentChoice.value
+    };
 
-      try {
-        const response = await fetch('/api/create-checkout-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            nom: form.nom.value,
-            email: form.email.value,
-            description: form.description.value,
-            budget: form.budget.value
-          })
+    try {
+      // 🔹 1. Envoi des infos à Zapier
+      await fetch("https://hooks.zapier.com/hooks/catch/25324492/u83b96z/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      // 🔹 2. Si le client veut payer, on redirige vers Stripe
+      if (paymentChoice.value === "oui") {
+        const response = await fetch("/api/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || "Erreur lors de la création du paiement.");
-        }
+        if (!response.ok) throw new Error(data.error || "Erreur de paiement Stripe.");
 
         if (data.url) {
-          window.location.href = data.url; // Redirection vers Stripe Checkout
+          window.location.href = data.url;
         } else {
           throw new Error("URL de paiement manquante.");
         }
-      } catch (err) {
-        alert("Erreur Stripe : " + err.message);
+      } else {
+        alert("✅ Formulaire envoyé avec succès sans paiement Stripe !");
         button.disabled = false;
         button.textContent = "Envoyer ma demande";
       }
-    });
-    // Affiche un message selon le résultat Stripe (success / canceled)
-(function () {
-  const params = new URLSearchParams(window.location.search);
-  const success = params.get("success");
-  const canceled = params.get("canceled");
+    } catch (err) {
+      alert("❌ Erreur : " + err.message);
+      button.disabled = false;
+      button.textContent = "Envoyer ma demande";
+    }
+  });
 
-  if (success === "true") {
-    alert("✅ Paiement test réussi. Votre demande a bien été enregistrée.");
-  }
+  // 🔹 Affiche un message selon le résultat Stripe
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get("success");
+    const canceled = params.get("canceled");
 
-  if (canceled === "1" || canceled === "true") {
-    alert("❌ Paiement annulé. Aucun montant n'a été débité.");
-  }
-})();
-  </script>
+    if (success === "true") {
+      alert("✅ Paiement test réussi. Votre demande a bien été enregistrée.");
+    }
+
+    if (canceled === "1" || canceled === "true") {
+      alert("❌ Paiement annulé. Aucun montant n'a été débité.");
+    }
+  })();
+</script>
 </body>
 </html>
 
